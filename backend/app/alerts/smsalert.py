@@ -44,8 +44,11 @@ def monitor_smartwatch():
         print(f"Smartwatch Data: {data}")
 
         # Heart Rate check
-        if data["heart_rate"] > HR_THRESHOLD_HIGH or data["heart_rate"] < HR_THRESHOLD_LOW:
-            send_alert(f"⚠️ High/Low Heart Rate Detected! HR: {data['heart_rate']} BPM")
+        if data["heart_rate"] > HR_THRESHOLD_HIGH :
+            send_alert(f"⚠️ High Heart Rate Detected! HR: {data['heart_rate']} BPM")
+
+        if data["heart_rate"] < HR_THRESHOLD_LOW:
+            send_alert(f"⚠️ Low Heart Rate Detected! HR: {data['heart_rate']} BPM")
 
         # SpO2 check
         if data["spo2"] < SPO2_THRESHOLD:

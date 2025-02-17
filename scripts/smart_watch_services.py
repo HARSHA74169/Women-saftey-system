@@ -1,0 +1,9 @@
+from enum import Enum
+
+class SmartWatchServices(Enum):
+    """List of smartwatch services"""
+    GENERIC_ACCESS = "00001800-0000-1000-8000-00805f9b34fb"
+    BATTERY = "0000180f-0000-1000-8000-00805f9b34fb"
+    HEART_RATE = "0000180d-0000-1000-8000-00805f9b34fb"
+    DEVICE_INFO = "0000180a-0000-1000-8000-00805f9b34fb"
+    ACTIVITY_SERVICE = "0000feea-0000-1000-8000-00805f9b34fb"
