@@ -24,5 +24,9 @@ def get_sensor_data():
         })
     return jsonify({"message": "No data found"}), 404
 
+@app.route('/')
+def hello():
+    return "HEllo World"
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
