@@ -12,28 +12,24 @@ MAC_ADDRESS_FASTRACK = "FB:D8:57:5B:04:32"
 HEART_RATE_UUID = "00002a37-0000-1000-8000-00805f9b34fb"  # Suspected HR
 STEP_COUNT_UUID = "0000fee1-0000-1000-8000-00805f9b34fb"  # Suspected Steps
 
-
 # Data storage for real-time graphing
 time_data, heart_rate_data, step_count_data = [], [], []
 
 # CSV File Setup
-CSV_FILE = "/files/watch_data.csv"
+CSV_FILE = "watch_data.csv"
 
 # Initialize CSV File with Headers
 with open(CSV_FILE, "w", newline="") as file:
     writer = csv.writer(file)
     writer.writerow(["Timestamp", "Heart Rate", "Step Count"])
 
-
 def extract_heart_rate(data):
     """Extracts heart rate from raw data (Assumption: First byte is HR)."""
-    return data[0] if len(data) > 0 else None
-
+    return data[1] if len(data) > 1 else None
 
 def extract_step_count(data):
     """Extracts step count from raw data (Assumption: First 2 bytes are steps)."""
     return data[0] + (data[1] << 8) if len(data) > 1 else None
-
 
 def notification_handler(sender, data):
     """ Debugging: Display raw and decoded data """
@@ -46,13 +42,21 @@ def notification_handler(sender, data):
     print(f"  🔹 Hexadecimal: {hex_values}")
     print(f"  🔹 Integer Values: {int_values}")
 
+    heart_rate, step_count = None, None
+
     # Try extracting values
     if sender == HEART_RATE_UUID:
         heart_rate = extract_heart_rate(int_values)
         print(f"  ❤️ Extracted Heart Rate: {heart_rate} bpm")
+        if heart_rate is not None:
+            time_data.append(timestamp)
+            heart_rate_data.append(heart_rate)
     elif sender == STEP_COUNT_UUID:
         step_count = extract_step_count(int_values)
         print(f"  👣 Extracted Step Count: {step_count}")
+        if step_count is not None:
+            time_data.append(timestamp)
+            step_count_data.append(step_count)
 
     # Log only if values are found
     if heart_rate or step_count:
@@ -72,13 +76,12 @@ async def read_and_notify():
             print("📡 Listening for Heart Rate and Step Count...")
 
             # Keep running to receive data
-            await asyncio.sleep(60)  # Change to adjust runtime
+            await asyncio.sleep(30)  # Change to adjust runtime
 
             # Stop notifications
             await client.stop_notify(HEART_RATE_UUID)
             await client.stop_notify(STEP_COUNT_UUID)
             print("⏹ Stopped notifications.")
-
 
 def update_graph(frame):
     """Updates the live graph with new data."""
@@ -97,13 +100,11 @@ def update_graph(frame):
     plt.legend()
     plt.tight_layout()
 
-
 def start_live_graph():
     """Starts the real-time plotting of heart rate and step count."""
     ani = animation.FuncAnimation(plt.gcf(), update_graph, interval=2000)
     print("📊 Opening live graph...")
     plt.show()
-
 
 if __name__ == "__main__":
     # Run BLE data collection asynchronously

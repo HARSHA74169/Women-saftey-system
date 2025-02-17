@@ -1,9 +1,7 @@
 import asyncio
-import sqlite3
 from bleak import BleakClient
 from enum import Enum
 import struct
-from datetime import datetime
 
 class SmartWatchServices(Enum):
     """List of smartwatch services"""
@@ -24,17 +22,6 @@ class SmartWatchReader:
         self.address = address
         self.client = None
         self.last_step_count = None
-        self.conn = sqlite3.connect('smartwatch_data.db')
-        self.cursor = self.conn.cursor()
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS sensor_data (
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                heart_rate INTEGER,
-                                spo2 INTEGER,
-                                step_count INTEGER,
-                                battery_level INTEGER,
-                                device_id TEXT)''')
-        self.conn.commit()
 
     async def connect(self):
         """Connect to the smartwatch"""
@@ -59,26 +46,16 @@ class SmartWatchReader:
     def heart_rate_handler(self, sender, data):
         """Handle heart rate notifications"""
         heart_rate = data[1] if len(data) > 1 else data[0]
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"Heart Rate: {heart_rate} BPM", end=" | ")
         if self.last_step_count is not None:
             print(f"Step Count: {self.last_step_count}")
-            self.cursor.execute('''INSERT INTO sensor_data (timestamp, heart_rate, step_count, device_id) 
-                                   VALUES (?, ?, ?, ?)''', (timestamp, heart_rate+60, self.last_step_count, self.address))
         else:
             print()
-            self.cursor.execute('''INSERT INTO sensor_data (timestamp, heart_rate, device_id) 
-                                   VALUES (?, ?, ?)''', (timestamp, heart_rate, self.address))
-        self.conn.commit()
 
     def step_count_handler(self, sender, data):
         """Handle step count notifications"""
         self.last_step_count = struct.unpack("<H", data[:2])[0]
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"Step Count: {self.last_step_count}")
-        self.cursor.execute('''INSERT INTO sensor_data (timestamp, step_count, device_id) 
-                               VALUES (?, ?, ?)''', (timestamp, self.last_step_count, self.address))
-        self.conn.commit()
 
     async def start_monitoring(self):
         """Start monitoring heart rate and step count"""
@@ -94,7 +71,6 @@ class SmartWatchReader:
         if self.client and self.client.is_connected:
             await self.client.disconnect()
             print("Disconnected")
-        self.conn.close()
 
 async def main():
     """Main function to connect and retrieve smartwatch data"""
@@ -107,9 +83,6 @@ async def main():
             battery = await watch.read_battery()
             if battery is not None:
                 print(f"Battery Level: {battery}%")
-                watch.cursor.execute('''INSERT INTO sensor_data (battery_level, device_id) 
-                                        VALUES (?, ?)''', (battery, MAC_ADDRESS))
-                watch.conn.commit()
 
             await watch.start_monitoring()
 
