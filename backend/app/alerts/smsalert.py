@@ -3,10 +3,10 @@ import random  # Simulating smartwatch data
 from twilio.rest import Client  # Twilio for SMS alerts
 
 # Twilio Credentials (replace with actual credentials)
-TWILIO_SID = "ACc496a9bde87a57652594ce10a93e9917"
-TWILIO_AUTH_TOKEN = "3c829b863a3e8a25e53ed5c30c67ed9e"
-TWILIO_PHONE = "+18175861375"
-EMERGENCY_CONTACT = "+919133733532"
+TWILIO_SID = "AC196d87c333d0f55059efcbfceb8606fe"
+TWILIO_AUTH_TOKEN = "892207d06a1b391a0e2de56621bca088"
+TWILIO_PHONE = "+19207179504"
+EMERGENCY_CONTACT = "+917416918937"
 
 # Function to send alert
 def send_alert(message):
