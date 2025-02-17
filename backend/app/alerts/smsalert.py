@@ -70,4 +70,4 @@ def monitor_smartwatch():
         time.sleep(5)  # Simulate data collection every 5 seconds
 
 # Run monitoring system
-monitor_smartwatch()
+# monitor_smartwatch()
