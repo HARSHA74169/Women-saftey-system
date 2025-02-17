@@ -1,7 +1,14 @@
 from flask import Flask, jsonify
 import sqlite3
 from flask_cors import CORS
-import os   
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import asyncio
+from bleak import BleakScanner
+
+from scripts.watchdetails import *
+import asyncio  
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for frontend
@@ -25,8 +32,6 @@ def get_sensor_data():
             "id": row[3]
         } for row in data])
     return jsonify({"message": "No data found"}), 404
-
-
 
 
 if __name__ == '__main__':
