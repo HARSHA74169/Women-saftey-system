@@ -19,7 +19,7 @@ async def list_services(MAC_ADDRESS):
 
         for service in client.services:
             
-            print(f"  [Service] {service.uuid}")
+            print(f"  [Service] eee{service.uuid}")
             print()
 
             for characteristic in service.characteristics:

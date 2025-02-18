@@ -32,6 +32,32 @@ def get_sensor_data():
             "id": row[3]
         } for row in data])
     return jsonify({"message": "No data found"}), 404
+async def scan_ble_devices():
+    devices = {}
+
+    def device_found_callback(device, advertisement_data):
+        devices[device.address] = {
+            "name": device.name or "Unknown",
+            "address": device.address,
+            "rssi": advertisement_data.rssi,
+        }
+
+    scanner = BleakScanner(detection_callback=device_found_callback)
+    await scanner.start()
+    await asyncio.sleep(5)
+    await scanner.stop()
+
+    return list(devices.values())
+@app.route('/scan', methods=['GET'])
+def scan():
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        devices = loop.run_until_complete(scan_ble_devices())
+
+        return jsonify({"devices": devices, "count": len(devices)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == '__main__':
