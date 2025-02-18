@@ -183,7 +183,7 @@ export function History() {
                     {entry.step_count ?? 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {'N/A'}
+                    {entry.emotion ?? 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {entry.battery_level ?? 'N/A'}

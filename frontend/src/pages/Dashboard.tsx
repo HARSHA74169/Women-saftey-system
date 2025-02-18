@@ -33,8 +33,10 @@ export function Dashboard() {
       {/* Current State Section */}
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-800">Current State</h2>
-          <Brain className="h-6 w-6 text-blue-500" />
+          <h2 className="text-xl font-semibold text-gray-800">
+            {/* Current State */}
+          </h2>
+          {/* <Brain className="h-6 w-6 text-blue-500" /> */}
         </div>
 
         {latestEmotion ? (
@@ -49,7 +51,9 @@ export function Dashboard() {
             </div>
           </div>
         ) : (
-          <p className="mt-4 text-sm text-gray-500">No emotion data available.</p>
+            <p className="mt-4 text-sm text-gray-500">
+              {/* No emotion data available. */}
+            </p>
         )}
       </div>
 

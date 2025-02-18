@@ -84,7 +84,7 @@ async def connect_device(device_id):
 def get_sensor_data():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT timestamp, heart_rate, step_count, battery_level, device_id FROM sensor_data ORDER BY timestamp DESC LIMIT 500")
+    cursor.execute("SELECT timestamp, heart_rate, step_count, battery_level, device_id, emotion FROM sensor_data ORDER BY timestamp DESC LIMIT 500")
     data = cursor.fetchall()
     conn.close()
 
@@ -94,7 +94,8 @@ def get_sensor_data():
             "heart_rate": row[1],
             "step_count": row[2],
             "battery_level": row[3],
-            "device_id": row[4]
+            "device_id": row[4],
+            "emotion" : row[5]
         } for row in data])
     return jsonify({"message": "No data found"}), 404
 async def scan_ble_devices():
