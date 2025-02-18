@@ -16,7 +16,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="history" element={<History />} />
-            <Route path="bluetooth" element={<Bluetooth />} />
+            <Route path="scan" element={<Bluetooth />} />
           </Route>
         </Routes>
       </BrowserRouter>
